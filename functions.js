@@ -23,3 +23,10 @@ function calculateCalories(weight, goalWeight) {
 
     return { min: minCalories, max: maxCalories }; // 범위 반환
 }
+
+class Food {
+  constructor(name, calories, category) {
+    this.name = name; // 음식 이름
+    this.calories = calories; // 칼로리
+    this.category = category
+  }
