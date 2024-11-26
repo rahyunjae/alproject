@@ -30,3 +30,4 @@ class Food {
     this.calories = calories; // 칼로리
     this.category = category
   }
+}
