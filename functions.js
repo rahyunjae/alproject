@@ -1,9 +1,22 @@
 function calculateBMI(height, weight) {
     // 미터 단위로 변환
     const heightInMeters = height / 100;
+
     // BMI 계산
     const bmi = weight / (heightInMeters * heightInMeters);
-    return parseFloat(bmi.toFixed(2)); // 소수점 2자리
+
+    // 정상 BMI 범위에 따른 정상 몸무게 계산
+    const normalWeightMin = (18.5 * (heightInMeters * heightInMeters)).toFixed(2);
+    const normalWeightMax = (23 * (heightInMeters * heightInMeters)).toFixed(2);
+
+    // 결과 반환
+    return {
+        bmi: parseFloat(bmi.toFixed(2)), // 소수점 2자리 BMI
+        normalWeightRange: {
+            min: parseFloat(normalWeightMin), // 정상 범위 최소 몸무게
+            max: parseFloat(normalWeightMax), // 정상 범위 최대 몸무게
+        },
+    };
 }
 
 function calculateCalories(weight, goalWeight) {
