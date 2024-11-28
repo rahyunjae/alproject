@@ -41,6 +41,33 @@ class Food {
   constructor(name, calories, category) {
     this.name = name; // 음식 이름
     this.calories = calories; // 칼로리
-    this.category = category
+    this.category = category;
   }
+}
+
+class FoodCategorizer {
+  constructor(){
+    this.categorized = {};
+  }
+  addFood(food){
+    const{calories, category} = food;
+    if (!(category in this.categorized)){
+      this.categorized[category] = [];
+    }
+
+    const item = this.categorized[category];
+    let inserted = false;
+    for (let i = 0;i < item.length ; i++){
+      if (item[i].calories > calories){
+        items.splice(i, 0, food); // 해당 위치에 삽입
+        inserted = true;
+        break;
+      }
+    }
+    if (!inserted) {
+      items.push(food); // 가장 뒤에 추가
+    }
+
+  }
+
 }
