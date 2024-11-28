@@ -71,3 +71,6 @@ class FoodCategorizer {
   }
 
 }
+
+// categorizer = new  FoodCategorizer
+// categorizer.addFood(new Food("Apple", 95, "Fruit"));
