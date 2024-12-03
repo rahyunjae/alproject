@@ -76,38 +76,72 @@ constructor(name, calories, category) {
       return this.categorized;
     }
   }
+
+  function findMealCombination(categorizer, calorieRange) {
+    const { min: dailyMinCalories, max: dailyMaxCalories } = calorieRange;
   
-  // CSV 파일 읽기 및 처리
-  function handleFileUpload(event) {
-    const file = event.target.files[0]; // 업로드된 파일 가져오기
-    if (!file) {
-      alert("파일을 선택해주세요.");
-      return;
+    // 하루 목표 칼로리 범위의 3분의 1로 타깃 범위 설정
+    const targetMinCalories = Math.round((dailyMinCalories / 3) * 0.9); // ±10% 여유
+    const targetMaxCalories = Math.round((dailyMaxCalories / 3) * 1.1);
+    const targetMid = (targetMinCalories + targetMaxCalories) / 2;
+  
+    const mainCarbs = categorizer.categorized["주식"] || [];
+    const mainDishes = categorizer.categorized["메인반찬"] || [];
+    const sideDishes = categorizer.categorized["사이드반찬"] || [];
+    const soups = categorizer.categorized["국"] || [];
+    const singleDishes = categorizer.categorized["단일음식"] || [];
+    const desserts = categorizer.categorized["후식"] || [];
+  
+    let bestCombination = null;
+    let closestToMid = Infinity;
+  
+    // 주식, 메인반찬, 사이드반찬, 국, 후식의 모든 조합 계산
+    for (const carb of mainCarbs) {
+      for (const main of mainDishes) {
+        for (const side of sideDishes) {
+          for (const soup of soups) {
+            const baseCalories = carb.calories + main.calories + side.calories + soup.calories;
+  
+            // 후식을 포함하거나 포함하지 않는 모든 경우 계산
+            for (const dessert of [null, ...desserts]) {
+              const totalCalories = dessert ? baseCalories + dessert.calories : baseCalories;
+  
+              if (totalCalories >= targetMinCalories && totalCalories <= targetMaxCalories) {
+                const diffToMid = Math.abs(targetMid - totalCalories);
+                if (diffToMid < closestToMid) {
+                  closestToMid = diffToMid;
+                  bestCombination = {
+                    combo: [carb, main, side, soup, dessert].filter(Boolean),
+                    totalCalories,
+                  };
+                }
+              }
+            }
+          }
+        }
+      }
     }
   
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const csvText = e.target.result;
-      const rows = csvText.split('\n'); // 줄 단위로 나누기
-      const data = rows.slice(1) // 첫 줄(헤더) 제거
-                      .map(row => row.split(',')); // 쉼표로 나누어 배열로 변환
+    // 단일음식 + 후식 조합 계산
+    for (const single of singleDishes) {
+      const singleCalories = single.calories;
   
-      // `Categorizer` 클래스와 `addFood` 함수 사용
-      const categorizer = new Categorizer();
-      data.forEach(row => {
-        if (row.length >= 3) { // 데이터 유효성 확인
-          const [name, calories, category] = row.map(item => item.trim());
-          categorizer.addFood(new Food(name, parseFloat(calories), category));
+      for (const dessert of [null, ...desserts]) {
+        const totalCalories = dessert ? singleCalories + dessert.calories : singleCalories;
+  
+        if (totalCalories >= targetMinCalories && totalCalories <= targetMaxCalories) {
+          const diffToMid = Math.abs(targetMid - totalCalories);
+          if (diffToMid < closestToMid) {
+            closestToMid = diffToMid;
+            bestCombination = {
+              combo: [single, dessert].filter(Boolean),
+              totalCalories,
+            };
+          }
         }
-      });
+      }
+    }
   
-      // 필요한 부분에서 Categorizer의 데이터를 사용할 수 있게 반환
-      const categorizedFoods = categorizer.getCategorizedFoods();
-      console.log(categorizedFoods); // 필요한 곳에서 사용
-    };
-  
-    reader.readAsText(file); // 파일을 텍스트로 읽기
+    return bestCombination;
   }
   
-  // 파일 업로드 이벤트 리스너
-  document.getElementById('csv-upload').addEventListener('change', handleFileUpload);
