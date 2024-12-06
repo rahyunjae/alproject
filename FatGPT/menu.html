@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오늘의 추천 식단</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      text-align: center;
+    }
+    .menu-item {
+      border-bottom: 1px solid #ccc;
+      padding: 10px 0;
+    }
+    .menu-item:last-child {
+      border-bottom: none;
+    }
+    #fileInput {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>오늘의 추천 식단</h1>
+  <input type="file" id="fileInput" accept=".csv">
+  <div id="menu"></div>
+
+  <script>
+    // CSV 파일 파싱 함수
+    function parseCSV(data) {
+      const rows = data.trim().split("\n");
+      const headers = rows.shift().split(",");
+      return rows.map(row => {
+        const values = row.split(",");
+        return headers.reduce((acc, header, index) => {
+          acc[header] = values[index];
+          return acc;
+        }, {});
+      });
+    }
+
+    // 랜덤으로 10개 선택
+    function getRandomItems(array, count) {
+      const shuffled = array.sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    }
+
+    // 메뉴판 생성
+    function displayMenu(menuItems) {
+      const menuDiv = document.getElementById("menu");
+      menuDiv.innerHTML = ""; // 기존 내용 초기화
+      menuItems.forEach(item => {
+        const menuItemDiv = document.createElement("div");
+        menuItemDiv.classList.add("menu-item");
+        menuItemDiv.innerHTML = `
+          <strong>음식 이름:</strong> ${item["음식 이름"]} <br>
+          <strong>카테고리:</strong> ${item["카테고리"]}
+        `;
+        menuDiv.appendChild(menuItemDiv);
+      });
+    }
+
+    // 파일 읽기 처리
+    document.getElementById("fileInput").addEventListener("change", function(event) {
+      const file = event.target.files[0];
+      if (!file) {
+        alert("CSV 파일을 선택해주세요!");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const csvData = e.target.result;
+        const foodData = parseCSV(csvData);
+        const randomMenu = getRandomItems(foodData, 10);
+        displayMenu(randomMenu);
+      };
+      reader.readAsText(file, "UTF-8");
+    });
+  </script>
+</body>
+</html>
