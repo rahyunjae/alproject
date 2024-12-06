@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meal Planner</title>
+</head>
+<body>
+  <h1>Customized Meal Planner</h1>
+  <input type="file" id="csvInput" accept=".csv">
+  <button onclick="generateMealPlan()">Generate Meal Plan</button>
+  <div id="mealOutput"></div>
+
+  <script src="functions.js"></script>
+  <script>
+    let foodData = [];
+    let categorizer = new Categorizer();
+
+    // CSV 파싱
+    document.getElementById('csvInput').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        const lines = e.target.result.split('\n');
+        lines.forEach((line, index) => {
+          if (index === 0 || !line.trim()) return; // Skip header or empty lines
+          const [name, calories, category] = line.split(',');
+          const food = new Food(name.trim(), parseFloat(calories), category.trim());
+          categorizer.addFood(food);
+        });
+        foodData = categorizer.getCategorizedFoods();
+        alert("CSV 파일 로드 완료!");
+      };
+
+      reader.readAsText(file);
+    });
+
+    // 식단 생성 및 출력
+    function generateMealPlan() {
+      const calorieRange = { min: 1200, max: 1800 }; // 샘플 칼로리 범위
+      const mealPlan = findMealCombination(categorizer, calorieRange);
+
+      if (mealPlan && mealPlan.combo.length > 0) {
+        const outputDiv = document.getElementById('mealOutput');
+        outputDiv.innerHTML = `
+          <h2>추천 식단</h2>
+          <ul>
+            ${mealPlan.combo.map(food => `<li>${food.name} (${food.calories} kcal)</li>`).join('')}
+          </ul>
+          <p><strong>총 칼로리:</strong> ${Math.floor(mealPlan.totalCalories)} kcal</p>
+        `;
+      } else {
+        alert("적절한 식단을 찾을 수 없습니다!");
+      }
+    }
+  </script>
+</body>
+</html>
