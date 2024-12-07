@@ -3,7 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meal Planner</title>
+  <title>Customized Meal Planner</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f7f7;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      color: #333;
+    }
+
+    input, button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #mealOutput {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul li {
+      margin: 5px 0;
+      font-size: 16px;
+      color: #555;
+    }
+
+    strong {
+      color: #007bff;
+    }
+  </style>
 </head>
 <body>
   <h1>Customized Meal Planner</h1>
@@ -16,42 +73,50 @@
     let foodData = [];
     let categorizer = new Categorizer();
 
-    // CSV 파싱
+    // CSV 파일 읽기 및 데이터 파싱
     document.getElementById('csvInput').addEventListener('change', function(event) {
       const file = event.target.files[0];
       const reader = new FileReader();
 
       reader.onload = function(e) {
-        const lines = e.target.result.split('\n');
+        const lines = e.target.result.split('\n').filter(line => line.trim()); // 빈 줄 제거
         lines.forEach((line, index) => {
-          if (index === 0 || !line.trim()) return; // Skip header or empty lines
-          const [name, calories, category] = line.split(',');
-          const food = new Food(name.trim(), parseFloat(calories), category.trim());
-          categorizer.addFood(food);
+          if (index === 0) return; // Skip the header
+          const [name, calories, category] = line.split(',').map(value => value.trim());
+          if (name && calories && category) {
+            const food = new Food(name, parseFloat(calories), category);
+            categorizer.addFood(food);
+          }
         });
+
         foodData = categorizer.getCategorizedFoods();
-        alert("CSV 파일 로드 완료!");
+        alert("CSV 파일이 성공적으로 업로드되었습니다!");
       };
 
       reader.readAsText(file);
     });
 
-    // 식단 생성 및 출력
+    // 추천 식단 생성
     function generateMealPlan() {
-      const calorieRange = { min: 1200, max: 1800 }; // 샘플 칼로리 범위
+      if (!foodData || foodData.length === 0) {
+        alert("먼저 CSV 파일을 업로드하세요.");
+        return;
+      }
+
+      const calorieRange = { min: 1200, max: 1800 };
       const mealPlan = findMealCombination(categorizer, calorieRange);
 
+      const outputDiv = document.getElementById('mealOutput');
       if (mealPlan && mealPlan.combo.length > 0) {
-        const outputDiv = document.getElementById('mealOutput');
         outputDiv.innerHTML = `
           <h2>추천 식단</h2>
           <ul>
-            ${mealPlan.combo.map(food => `<li>${food.name} (${food.calories} kcal)</li>`).join('')}
+            ${mealPlan.combo.map(food => `<li>${food.name} (${food.calories.toFixed(1)} kcal)</li>`).join('')}
           </ul>
-          <p><strong>총 칼로리:</strong> ${Math.floor(mealPlan.totalCalories)} kcal</p>
+          <p><strong>총 칼로리:</strong> ${mealPlan.totalCalories.toFixed(1)} kcal</p>
         `;
       } else {
-        alert("적절한 식단을 찾을 수 없습니다!");
+        outputDiv.innerHTML = "<p>적절한 식단을 찾을 수 없습니다.</p>";
       }
     }
   </script>
