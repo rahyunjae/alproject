@@ -79,7 +79,7 @@ constructor(name, calories, category) {
 
   function findMealCombination(categorizer, calorieRange) {
     const { min: dailyMinCalories, max: dailyMaxCalories } = calorieRange;
-  
+    
     // 하루 목표 칼로리 범위의 3분의 1로 타깃 범위 설정
     const targetMinCalories = Math.round((dailyMinCalories / 3) * 0.9); // ±10% 여유
     const targetMaxCalories = Math.round((dailyMaxCalories / 3) * 1.1);
@@ -106,6 +106,9 @@ constructor(name, calories, category) {
             for (const dessert of [null, ...desserts]) {
               const totalCalories = dessert ? baseCalories + dessert.calories : baseCalories;
   
+              const diffToMin = Math.abs(targetMinCalories - totalCalories);
+              const diffToMax = Math.abs(targetMaxCalories - totalCalories);
+  
               if (totalCalories >= targetMinCalories && totalCalories <= targetMaxCalories) {
                 const diffToMid = Math.abs(targetMid - totalCalories);
                 if (diffToMid < closestToMid) {
@@ -129,6 +132,9 @@ constructor(name, calories, category) {
       for (const dessert of [null, ...desserts]) {
         const totalCalories = dessert ? singleCalories + dessert.calories : singleCalories;
   
+        const diffToMin = Math.abs(targetMinCalories - totalCalories);
+        const diffToMax = Math.abs(targetMaxCalories - totalCalories);
+  
         if (totalCalories >= targetMinCalories && totalCalories <= targetMaxCalories) {
           const diffToMid = Math.abs(targetMid - totalCalories);
           if (diffToMid < closestToMid) {
@@ -144,4 +150,5 @@ constructor(name, calories, category) {
   
     return bestCombination;
   }
+  
   
