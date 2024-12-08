@@ -56,7 +56,7 @@
 <body>
   <header>
     <h1>Fat GPT</h1>
-</header>
+  </header>
   <div class="container">
     <h1>식사 추천 프로그램</h1>
 
@@ -84,6 +84,14 @@
     <div id="meal-result"></div>
   </div>
 
+  <script>
+    window.onload = function() {
+        const currentWeight = localStorage.getItem("currentWeight");
+        if (currentWeight) {
+            document.getElementById("weight").value = currentWeight;
+        }
+    };
+  </script>
   <script src="fileUploader.js"></script>
   <footer>
     <p>© 2024 FAT GPT</p>

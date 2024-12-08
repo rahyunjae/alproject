@@ -9,6 +9,105 @@
     <script src="functions.js"></script>
 
     <style>
+        label {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .bmi-bar-container {
+            position: relative;
+            width: 100%;
+            height: 30px;
+            background-color: #f4f4f4;
+            border-radius: 5px;
+            margin-top: 30px;
+            overflow: hidden;
+        }
+
+        .bmi-range {
+            position: absolute;
+            height: 100%;
+            top: 0;
+        }
+
+        .underweight {
+            background-color: rgb(135, 206, 250);
+            width: calc((18.5 / 40) * 100%);
+        }
+
+        .normal {
+            background-color: rgb(144, 238, 144);
+            left: calc((18.5 / 40) * 100%);
+            width: calc(((23 - 18.5) / 40) * 100%);
+        }
+
+        .overweight {
+            background-color: rgba(255, 231, 153, 0.925);
+            left: calc((23 / 40) * 100%);
+            width: calc(((25 - 23) / 40) * 100%);
+        }
+
+        .obese {
+            background-color: rgba(255, 99, 71, 0.801);
+            left: calc((25 / 40) * 100%);
+            width: calc(((40 - 25) / 40) * 100%);
+        }
+
+        .bmi-indicator {
+            position: absolute;
+            top: -10px;
+            width: 2px;
+            height: 50px;
+            background-color: black;
+        }
+
+        .bmi-label {
+            position: absolute;
+            top: -25px;
+            font-size: 12px;
+            color: #333;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 3px;
+            box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
+            transform: translateX(-50%);
+        }
+
+        .bmi-result {
+            margin-top: 20px;
+            text-align: left;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .recommend-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .recommend-button:hover {
+            background-color: #218838;
+        }
+
         h1 {
             margin-bottom: 20px;
             color: #333;
@@ -32,18 +131,10 @@
         <div class="bmi-result" id="bmi-result"></div>
 
         <div class="bmi-bar-container">
-            <!-- BMI 범위 표시 -->
             <div class="bmi-range underweight"></div>
             <div class="bmi-range normal"></div>
             <div class="bmi-range overweight"></div>
             <div class="bmi-range obese"></div>
-            <!-- BMI 기준선 -->
-            <div class="bmi-label" style="left: 0%;">0</div>
-            <div class="bmi-label" style="left: calc((18.5 / 40) * 100%);">18.5</div>
-            <div class="bmi-label" style="left: calc((23 / 40) * 100%);">23</div>
-            <div class="bmi-label" style="left: calc((25 / 40) * 100%);">25</div>
-            <div class="bmi-label" style="left: 100%;">40</div>
-            <!-- 사용자 BMI 표시 -->
             <div class="bmi-indicator" id="bmi-indicator" style="display: none;"></div>
         </div>
 
@@ -72,6 +163,9 @@
                 bmiIndicator.style.display = "block";
 
                 document.getElementById("recommend-button").style.display = "inline-block";
+
+                // 현재 몸무게 값을 localStorage에 저장
+                localStorage.setItem("currentWeight", weight);  
             } catch (error) {
                 alert(error.message);
             }
