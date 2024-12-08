@@ -3,85 +3,108 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>오늘의 추천 식단</title>
+  <title>식사 추천</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
-      line-height: 1.6;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
-    h1 {
+
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
       text-align: center;
     }
-    .menu-item {
-      border-bottom: 1px solid #ccc;
-      padding: 10px 0;
-    }
-    .menu-item:last-child {
-      border-bottom: none;
-    }
-    #fileInput {
+
+    h1 {
       margin-bottom: 20px;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      color: #555;
+      margin-top: 15px;
+      text-align: left;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #meal-result {
+      margin-top: 20px;
+      text-align: left;
+      font-size: 14px;
+      color: #333;
+      background-color: #f1f1f1;
+      padding: 15px;
+      border-radius: 5px;
     }
   </style>
 </head>
+<script src="functions.js"></script>
 <body>
-  <h1>오늘의 추천 식단</h1>
-  <input type="file" id="fileInput" accept=".csv">
-  <div id="menu"></div>
+  <div class="container">
+    <h1>식사 추천 프로그램</h1>
 
-  <script>
-    // CSV 파일 파싱 함수
-    function parseCSV(data) {
-      const rows = data.trim().split("\n");
-      const headers = rows.shift().split(",");
-      return rows.map(row => {
-        const values = row.split(",");
-        return headers.reduce((acc, header, index) => {
-          acc[header] = values[index];
-          return acc;
-        }, {});
-      });
-    }
+    <!-- CSV 파일 업로드 -->
+    <div id="file-container">
+      <label for="csv-upload">CSV 파일 업로드:</label>
+      <input type="file" id="csv-upload" accept=".csv">
+    </div>
 
-    // 랜덤으로 10개 선택
-    function getRandomItems(array, count) {
-      const shuffled = array.sort(() => 0.5 - Math.random());
-      return shuffled.slice(0, count);
-    }
+    <!-- 현재 체중 및 목표 체중 입력 -->
+    <div>
+      <label for="weight">현재 체중 (kg):</label>
+      <input type="number" id="weight" min="0" placeholder="예: 65">
+    </div>
 
-    // 메뉴판 생성
-    function displayMenu(menuItems) {
-      const menuDiv = document.getElementById("menu");
-      menuDiv.innerHTML = ""; // 기존 내용 초기화
-      menuItems.forEach(item => {
-        const menuItemDiv = document.createElement("div");
-        menuItemDiv.classList.add("menu-item");
-        menuItemDiv.innerHTML = `
-          <strong>음식 이름:</strong> ${item["음식 이름"]} <br>
-          <strong>카테고리:</strong> ${item["카테고리"]}
-        `;
-        menuDiv.appendChild(menuItemDiv);
-      });
-    }
+    <div>
+      <label for="goalWeight">목표 체중 (kg):</label>
+      <input type="number" id="goalWeight" min="0" placeholder="예: 60">
+    </div>
 
-    // 파일 읽기 처리
-    document.getElementById("fileInput").addEventListener("change", function(event) {
-      const file = event.target.files[0];
-      if (!file) {
-        alert("CSV 파일을 선택해주세요!");
-        return;
-      }
+    <!-- 버튼 -->
+    <button onclick="generateMealRecommendation()">식사 추천</button>
 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const csvData = e.target.result;
-        const foodData = parseCSV(csvData);
-        const randomMenu = getRandomItems(foodData, 10);
-        displayMenu(randomMenu);
-      };
-      reader.readAsText(file, "UTF-8");
-    });
-  </script>
+    <!-- 결과 출력 -->
+    <div id="meal-result"></div>
+  </div>
+
+  <script src="fileUploader.js"></script>
 </body>
 </html>
