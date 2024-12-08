@@ -16,7 +16,12 @@
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
         }
-
+        header, footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
         .container {
             text-align: center;
             padding: 20px;
@@ -128,9 +133,28 @@
             font-size: 14px;
             color: #555;
         }
+
+        .recommend-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .recommend-button:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
+    <header>
+        <h1>FAT GPT</h1>
+    </header>
     <div class="container">
         <h1>식단 추천</h1>
         <form id="bmi-form">
@@ -158,6 +182,8 @@
             <!-- 사용자 BMI 표시 -->
             <div class="bmi-indicator" id="bmi-indicator" style="display: none;"></div>
         </div>
+
+        <a href="menu.html" class="recommend-button" id="recommend-button" style="display: none;">식단 추천받기</a>
     </div>
 
     <script>
@@ -180,10 +206,15 @@
                 const bmiPercent = Math.min(40, Math.max(0, result.bmi)) / 40 * 100;
                 bmiIndicator.style.left = `${bmiPercent}%`;
                 bmiIndicator.style.display = "block";
+
+                document.getElementById("recommend-button").style.display = "inline-block";
             } catch (error) {
                 alert(error.message);
             }
         });
     </script>
+    <footer>
+        <p>© 2024 FAT GPT</p>
+    </footer>
 </body>
 </html>
