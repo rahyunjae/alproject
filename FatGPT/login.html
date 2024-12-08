@@ -4,50 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 300px; /* 컨테이너의 넓이 설정 */
-        }
-        input {
-            display: block;
-            width: calc(100% - 20px); /* 컨테이너 크기에 맞게 조정 */
-            margin: 10px auto;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header>
+        <h1>FAT GPT</h1>
+    </header>
+
     <div class="container">
         <h1>로그인</h1>
         <input type="text" id="loginId" placeholder="아이디 입력" required>
@@ -72,5 +36,8 @@
             }
         }
     </script>
+    <footer>
+        <p>© 2024 FAT GPT</p>
+    </footer>
 </body>
 </html>
