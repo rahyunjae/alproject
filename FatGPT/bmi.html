@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>식단 추천</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="functions.js"></script>
+
+    <style>
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Fat GPT</h1>
+    </header>
+    <div class="container">
+        <h1>식단 추천</h1>
+        <form id="bmi-form">
+            <label for="height">키(cm):</label>
+            <input type="number" id="height" placeholder="예: 170" required>
+            <label for="weight">몸무게(kg):</label>
+            <input type="number" id="weight" placeholder="예: 65" required>
+            <button type="submit">BMI 계산</button>
+        </form>
+
+        <div class="bmi-result" id="bmi-result"></div>
+
+        <div class="bmi-bar-container">
+            <!-- BMI 범위 표시 -->
+            <div class="bmi-range underweight"></div>
+            <div class="bmi-range normal"></div>
+            <div class="bmi-range overweight"></div>
+            <div class="bmi-range obese"></div>
+            <!-- BMI 기준선 -->
+            <div class="bmi-label" style="left: 0%;">0</div>
+            <div class="bmi-label" style="left: calc((18.5 / 40) * 100%);">18.5</div>
+            <div class="bmi-label" style="left: calc((23 / 40) * 100%);">23</div>
+            <div class="bmi-label" style="left: calc((25 / 40) * 100%);">25</div>
+            <div class="bmi-label" style="left: 100%;">40</div>
+            <!-- 사용자 BMI 표시 -->
+            <div class="bmi-indicator" id="bmi-indicator" style="display: none;"></div>
+        </div>
+
+        <a href="menu.html" class="recommend-button" id="recommend-button" style="display: none;">식단 추천받기</a>
+    </div>
+
+    <script>
+        document.getElementById("bmi-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const height = parseFloat(document.getElementById("height").value);
+            const weight = parseFloat(document.getElementById("weight").value);
+
+            try {
+                const result = calculateBMI(height, weight);
+
+                const bmiResultDiv = document.getElementById("bmi-result");
+                bmiResultDiv.innerHTML = `
+                    <p><strong>BMI:</strong> ${result.bmi}</p>
+                    <p><strong>정상 몸무게 범위:</strong> ${result.normalWeightRange.min}kg ~ ${result.normalWeightRange.max}kg</p>
+                `;
+
+                const bmiIndicator = document.getElementById("bmi-indicator");
+                const bmiPercent = Math.min(40, Math.max(0, result.bmi)) / 40 * 100;
+                bmiIndicator.style.left = `${bmiPercent}%`;
+                bmiIndicator.style.display = "block";
+
+                document.getElementById("recommend-button").style.display = "inline-block";
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+    </script>
+    <footer>
+        <p>© 2024 FAT GPT</p>
+    </footer>
+</body>
+</html>

@@ -37,30 +37,34 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // 식사 추천 함수
-function generateMealRecommendation() {
-  const weight = parseFloat(document.getElementById('weight').value);
-  const goalWeight = parseFloat(document.getElementById('goalWeight').value);
-  if (isNaN(weight) || isNaN(goalWeight)) {
-    alert("체중과 목표 체중을 입력하세요.");
-    return;
+  function generateMealRecommendation() {
+    const weight = parseFloat(document.getElementById('weight').value);
+    const goalWeight = parseFloat(document.getElementById('goalWeight').value);
+    if (isNaN(weight) || isNaN(goalWeight)) {
+      alert("체중과 목표 체중을 입력하세요.");
+      return;
+    }
+
+    // 하루 칼로리 범위 계산
+    const calorieRange = calculateCalories(weight, goalWeight);
+
+    // 식사 추천 조합 찾기
+    if (window.categorizer) {
+      const bestCombination = findMealCombination(window.categorizer, calorieRange);
+
+      // 결과 출력
+      const resultDiv = document.getElementById('meal-result');
+      if (bestCombination) {
+        const mealList = bestCombination.combo.map(item => item.name).join(", ");
+        resultDiv.innerHTML = `
+          <h3>추천 식사 조합</h3>
+          <p>추천된 식사: ${mealList}</p>
+          <p>총 칼로리: ${bestCombination.totalCalories} kcal</p>
+        `;
+      } else {
+        resultDiv.innerHTML = "<p>목표 칼로리 범위에 맞는 식사 조합을 찾을 수 없습니다.</p>";
+      }
+    } else {
+      alert("먼저 CSV 파일을 업로드하세요.");
+    }
   }
-
-  // 하루 칼로리 범위 계산
-  const calorieRange = calculateCalories(weight, goalWeight);
-
-  // 식사 추천 조합 찾기
-  if (window.categorizer) {
-    const mealRecommendations = recommendDistinctMeals(window.categorizer, calorieRange);
-
-    // 결과 출력
-    const resultDiv = document.getElementById('meal-result');
-    resultDiv.innerHTML = `
-      <h3>추천 식사 조합</h3>
-      <p><strong>아침:</strong> ${mealRecommendations.breakfast.map(item => item.name).join(", ")}</p>
-      <p><strong>점심:</strong> ${mealRecommendations.lunch.map(item => item.name).join(", ")}</p>
-      <p><strong>저녁:</strong> ${mealRecommendations.dinner.map(item => item.name).join(", ")}</p>
-    `;
-  } else {
-    alert("먼저 CSV 파일을 업로드하세요.");
-  }
-}
