@@ -147,7 +147,39 @@ constructor(name, calories, category) {
         }
       }
     }
-  
+    function recommendDistinctMeals(categorizer, calorieRange) {
+      const dailyMeals = []; // 아침, 점심, 저녁 저장
+      let remainingCategorizer = JSON.parse(JSON.stringify(categorizer.categorized)); // 깊은 복사로 음식 데이터 복제
+    
+      for (let i = 0; i < 3; i++) {
+        const bestCombination = findMealCombination({ categorized: remainingCategorizer }, calorieRange);
+    
+        if (bestCombination) {
+          dailyMeals.push(bestCombination);
+    
+          // 사용한 음식을 제외한 새로운 음식 리스트 생성
+          const usedFoods = bestCombination.combo;
+          for (const food of usedFoods) {
+            const category = food.category;
+            const index = remainingCategorizer[category].findIndex((item) => item.name === food.name);
+    
+            if (index !== -1) {
+              remainingCategorizer[category].splice(index, 1); // 사용한 음식 제거
+            }
+          }
+        } else {
+          break; // 더 이상 조합을 만들 수 없으면 종료
+        }
+      }
+    
+      const [breakfast, lunch, dinner] = dailyMeals;
+      return {
+        breakfast: breakfast ? breakfast.combo : [],
+        lunch: lunch ? lunch.combo : [],
+        dinner: dinner ? dinner.combo : [],
+      };
+    }
+    
     return bestCombination;
   }
   
