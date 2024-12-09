@@ -1,33 +1,60 @@
 /* style.css */
 
-html, body {
-    height: 100%; /* 화면 전체 높이 사용 */
-    width: 100%;
-    margin: 0; /* 기본 여백 제거 */
-    display: flex; /* flexbox 적용 */
-    justify-content: center; /* 가로 중앙 정렬 */
-    align-items: center; /* 세로 중앙 정렬 */
-}
-
-header, footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 10px 0;
-    position: fixed;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    font-size: 18px;
-    transition: top 0.3s ease-out, bottom 0.3s ease-out; /* 부드럽게 사라짐 */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
 }
 
 header {
-    top: 0; /* 화면의 최상단 고정 */
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+}
+
+main {
+    min-height: 150vh; /* 충분히 긴 컨텐츠 영역 확보 */
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+.content a {
+    margin-top: 20px; /* 버튼을 h2와 분리하기 위해 상단 여백 추가 */
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    max-width: 200px; /* 버튼의 최대 너비 제한 */
+    width: 60%; /* 자동으로 너비 설정 */
+    box-sizing: border-box; /* 패딩을 포함한 너비 계산 */
+}
+
+.content a:hover {
+    background-color: #0056b3;
 }
 
 footer {
-    bottom: 0; /* 화면의 최하단 고정 */
+    background-color: #222;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    margin-top: 20px; /* 위 컨텐츠와 간격 추가 */
+}
+
+footer a {
+    text-decoration: none; /* 기본 밑줄 제거 */
+    color: #ffffff; /* 텍스트 색상 (원하는 색으로 설정) */
+    font-size: 16px; /* 폰트 크기 */
+    padding: 5px 10px; /* 패딩 추가 */
+}
+
+footer a:hover {
+    text-decoration: underline; /* 마우스를 올리면 밑줄 추가 */
 }
 
 .container {
@@ -65,18 +92,7 @@ main {
     margin: 60px auto 80px auto; /* 위 여백 추가 (header 높이만큼), 아래 여백 (footer 높이만큼) */
 }
 
-a {
-    margin-top: 20px; /* 버튼을 h2와 분리하기 위해 상단 여백 추가 */
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-}
-a:hover {
-    background-color: #0056b3;
-}
+
 
 /* login */
 
@@ -205,4 +221,72 @@ input {
 
 .recommend-button:hover {
     background-color: #218838;
+}
+
+/* sidebar */
+
+/* 사이드바 기본 스타일 */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px; /* 기본적으로 숨겨진 상태 */
+    width: 250px;
+    height: 100%;
+    background: #cacacaf6;
+    color: rgb(255, 255, 255);
+    transition: left 0.3s ease; /* 부드러운 애니메이션 */
+    overflow-y: auto;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+}
+
+/* 마우스를 올리면 사이드바 표시 */
+.sidebar:hover {
+    left: 0; /* 화면에 표시 */
+}
+
+/* 사이드바 안의 내용 스타일 */
+.sidebar h2 {
+    color:rgb(0, 0, 0);
+    margin: 0 0 20px;
+    font-size: 32px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 15px;
+}
+
+.sidebar ul li a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+}
+
+.sidebar ul li a:hover {
+    text-decoration: underline;
+}
+
+/* 메인 콘텐츠를 왼쪽으로 약간 띄워서 사이드바 접근 가능 */
+.content {
+    margin-left: 30px; /* 사이드바 접근 공간 확보 */
+    padding: 20px;
+}
+
+.sidebar a {
+    margin-top: 40px; /* 버튼을 h2와 분리하기 위해 상단 여백 추가 */
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #a7a7a7;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    width: 80px;
+    text-align:center;
+}
+.sidebar a:hover {
+    background-color: #8f8f8f;
 }
