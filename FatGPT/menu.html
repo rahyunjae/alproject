@@ -72,13 +72,6 @@
   <div class="container">
     <h1>식사 추천 프로그램</h1>
 
-    <!-- CSV 파일 업로드 -->
-    <div id="file-container">
-      <label for="csv-upload">CSV 파일 업로드:</label>
-      <input type="file" id="csv-upload" accept=".csv">
-    </div>
-
-    <!-- 현재 체중 및 목표 체중 입력 -->
     <div>
       <label for="weight">현재 체중 (kg):</label>
       <input type="number" id="weight" min="0" placeholder="예: 65">
@@ -90,21 +83,38 @@
     </div>
 
     <!-- 버튼 -->
-    <button onclick="generateMealRecommendation()">식사 추천</button>
+    <button onclick="onButtonClick()">식사 추천</button> 
 
     <!-- 결과 출력 -->
     <div id="meal-result"></div>
   </div>
 
   <script>
+    function onButtonClick(){
+      recommend3Meals(new FoodsData(), calculateCalories(document.getElementById('weight').value, document.getElementById('goalWeight').value))
+      const mealPlan = JSON.parse(localStorage.getItem("dailyMealPlan"));
+        if (mealPlan) {
+            document.getElementById("meal-result").innerHTML = `
+                <h2>아침:</h2>
+                <ul>${mealPlan.breakfast.map(food => `<li>${food.name}</li>`).join('')}</ul>
+                <h2>점심:</h2>
+                <ul>${mealPlan.lunch.map(food => `<li>${food.name}</li>`).join('')}</ul>
+                <h2>저녁:</h2>
+                <ul>${mealPlan.dinner.map(food => `<li>${food.name}</li>`).join('')}</ul>
+            `;
+        }
+    }
     window.onload = function() {
         const currentWeight = localStorage.getItem("currentWeight");
         if (currentWeight) {
             document.getElementById("weight").value = currentWeight;
         }
+
+        // 로컬 스토리지에서 식사 추천 결과 로드
+        
     };
   </script>
-  <script src="fileUploader.js"></script>
+
   <footer>
     <a href="#">회사소개</a> | 
     <a href="#">인재채용</a> | 
