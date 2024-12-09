@@ -38,142 +38,159 @@ function calculateCalories(weight, goalWeight) {
 }
 
 class Food {
-constructor(name, calories, category) {
-  this.name = name; // 음식 이름
-  this.calories = calories; // 칼로리
-  this.category = category;
+  constructor(name, calories, category) {
+    this.name = name; // 음식 이름
+    this.calories = calories; // 칼로리
+    this.category = category;
+  }
 }
-}
-  // Categorizer 클래스 정의
-  class Categorizer {
-    constructor() {
+class Categorizer {
+  constructor() {
       this.categorized = {};
-    }
-  
-    addFood(food) {
+  }
+
+  addFood(food) {
       const { calories, category } = food;
       if (!(category in this.categorized)) {
-        this.categorized[category] = [];
+          this.categorized[category] = [];
       }
   
       const items = this.categorized[category];
       let inserted = false;
       for (let i = 0; i < items.length; i++) {
-        if (items[i].calories > calories) {
-          items.splice(i, 0, food); // 해당 위치에 삽입
-          inserted = true;
-          break;
-        }
+          if (items[i].calories > calories) {
+              items.splice(i, 0, food); // 해당 위치에 삽입
+              inserted = true;
+              break;
+          }
       }
   
       if (!inserted) {
-        items.push(food); // 가장 뒤에 추가
+          items.push(food); // 가장 뒤에 추가
       }
-    }
-  
-    // 카테고리별 음식 추가된 상태를 반환
-    getCategorizedFoods() {
-      return this.categorized;
-    }
   }
 
-  function findMealCombination(categorizer, calorieRange) {
-    const { min: dailyMinCalories, max: dailyMaxCalories } = calorieRange;
-  
-    // 하루 목표 칼로리 범위의 3분의 1로 타깃 범위 설정
-    const targetMinCalories = Math.round((dailyMinCalories / 3) * 0.9); // ±10% 여유
-    const targetMaxCalories = Math.round((dailyMaxCalories / 3) * 1.1);
-    const targetMid = (targetMinCalories + targetMaxCalories) / 2;
-  
-    const mainCarbs = categorizer.categorized["주식"] || [];
-    const mainDishes = categorizer.categorized["메인반찬"] || [];
-    const sideDishes = categorizer.categorized["사이드반찬"] || [];
-    const soups = categorizer.categorized["국"] || [];
-    const singleDishes = categorizer.categorized["단일음식"] || [];
-    const desserts = categorizer.categorized["후식"] || [];
-  
-    let bestCombination = null;
-    let closestToMid = Infinity;
-  
-    // 주식, 메인반찬, 사이드반찬, 국, 후식의 모든 조합 계산
-    for (const carb of mainCarbs) {
+  // 카테고리별 음식 추가된 상태를 반환
+  getCategorizedFoods() {
+      return this.categorized;
+  }
+}
+
+
+function findMealCombination(categorizer, calorieRange) {
+  const { min: dailyMinCalories, max: dailyMaxCalories } = calorieRange;
+
+  // 하루 목표 칼로리 범위의 3분의 1로 타깃 범위 설정
+  const targetMinCalories = Math.round((dailyMinCalories / 3) * 0.9); // ±10% 여유
+  const targetMaxCalories = Math.round((dailyMaxCalories / 3) * 1.1);
+  const targetMid = (targetMinCalories + targetMaxCalories) / 2;
+
+  const mainCarbs = categorizer.categorized["주식"] || [];
+  const mainDishes = categorizer.categorized["메인반찬"] || [];
+  const sideDishes = categorizer.categorized["사이드반찬"] || [];
+  const soups = categorizer.categorized["국"] || [];
+  const singleDishes = categorizer.categorized["단일음식"] || [];
+  const desserts = categorizer.categorized["후식"] || [];
+
+  let bestCombination = null;
+  let closestToMid = Infinity;
+
+  // 주식, 메인반찬, 사이드반찬, 국, 후식의 모든 조합 계산
+  for (const carb of mainCarbs) {
       for (const main of mainDishes) {
-        for (const side of sideDishes) {
-          for (const soup of soups) {
-            const baseCalories = carb.calories + main.calories + side.calories + soup.calories;
-  
-            // 후식을 포함하거나 포함하지 않는 모든 경우 계산
-            for (const dessert of [null, ...desserts]) {
-              const totalCalories = dessert ? baseCalories + dessert.calories : baseCalories;
-  
-              if (totalCalories >= targetMinCalories && totalCalories <= targetMaxCalories) {
-                const diffToMid = Math.abs(targetMid - totalCalories);
-                if (diffToMid < closestToMid) {
+          for (const side of sideDishes) {
+              for (const soup of soups) {
+                  const baseCalories = carb.calories + main.calories + side.calories + soup.calories;
+
+                  // 후식을 포함하거나 포함하지 않는 모든 경우 계산
+                  for (const dessert of [null, ...desserts]) {
+                      const totalCalories = dessert ? baseCalories + dessert.calories : baseCalories;
+
+                      if (totalCalories >= targetMinCalories && totalCalories <= targetMaxCalories) {
+                          const diffToMid = Math.abs(targetMid - totalCalories);
+                          if (diffToMid < closestToMid) {
+                              closestToMid = diffToMid;
+                              bestCombination = {
+                                  combo: [carb, main, side, soup, dessert].filter(Boolean),
+                                  totalCalories,
+                              };
+                          }
+                      }
+                  }
+              }
+          }
+      }
+  }
+
+  // 단일음식 + 후식 조합 계산
+  for (const single of singleDishes) {
+      const singleCalories = single.calories;
+
+      for (const dessert of [null, ...desserts]) {
+          const totalCalories = dessert ? singleCalories + dessert.calories : singleCalories;
+
+          if (totalCalories >= targetMinCalories && totalCalories <= targetMaxCalories) {
+              const diffToMid = Math.abs(targetMid - totalCalories);
+              if (diffToMid < closestToMid) {
                   closestToMid = diffToMid;
                   bestCombination = {
-                    combo: [carb, main, side, soup, dessert].filter(Boolean),
-                    totalCalories,
+                      combo: [single, dessert].filter(Boolean),
+                      totalCalories,
                   };
-                }
               }
-            }
           }
-        }
       }
-    }
-  
-    // 단일음식 + 후식 조합 계산
-    for (const single of singleDishes) {
-      const singleCalories = single.calories;
-  
-      for (const dessert of [null, ...desserts]) {
-        const totalCalories = dessert ? singleCalories + dessert.calories : singleCalories;
-  
-        if (totalCalories >= targetMinCalories && totalCalories <= targetMaxCalories) {
-          const diffToMid = Math.abs(targetMid - totalCalories);
-          if (diffToMid < closestToMid) {
-            closestToMid = diffToMid;
-            bestCombination = {
-              combo: [single, dessert].filter(Boolean),
-              totalCalories,
-            };
-          }
-        }
-      }
-    }
-  
-    return bestCombination;
   }
-  function recommendDistinctMeals(categorizer, calorieRange) {
-    const dailyMeals = []; // 아침, 점심, 저녁 저장
-    let remainingCategorizer = JSON.parse(JSON.stringify(categorizer.categorized)); // 깊은 복사로 음식 데이터 복제
-  
-    for (let i = 0; i < 3; i++) {
+
+  return bestCombination;
+}
+
+function recommendDistinctMeals(categorizer, calorieRange) {
+  const dailyMeals = []; // 아침, 점심, 저녁 저장
+  let remainingCategorizer = JSON.parse(JSON.stringify(categorizer.categorized)); // 깊은 복사로 음식 데이터 복제
+
+  for (let i = 0; i < 3; i++) {
       const bestCombination = findMealCombination({ categorized: remainingCategorizer }, calorieRange);
-  
+
       if (bestCombination) {
-        dailyMeals.push(bestCombination);
-  
-        // 사용한 음식을 제외한 새로운 음식 리스트 생성
-        const usedFoods = bestCombination.combo;
-        for (const food of usedFoods) {
-          const category = food.category;
-          const index = remainingCategorizer[category].findIndex((item) => item.name === food.name);
-  
-          if (index !== -1) {
-            remainingCategorizer[category].splice(index, 1); // 사용한 음식 제거
+          dailyMeals.push(bestCombination);
+
+          // 사용한 음식을 제외한 새로운 음식 리스트 생성
+          const usedFoods = bestCombination.combo;
+          for (const food of usedFoods) {
+              const category = food.category;
+              const index = remainingCategorizer[category].findIndex((item) => item.name === food.name);
+
+              if (index !== -1) {
+                  remainingCategorizer[category].splice(index, 1); // 사용한 음식 제거
+              }
           }
-        }
       } else {
-        break; // 더 이상 조합을 만들 수 없으면 종료
+          break; // 더 이상 조합을 만들 수 없으면 종료
       }
-    }
-  
-    const [breakfast, lunch, dinner] = dailyMeals;
-    return {
+  }
+
+  const [breakfast, lunch, dinner] = dailyMeals;
+  return {
       breakfast: breakfast ? breakfast.combo : [],
       lunch: lunch ? lunch.combo : [],
       dinner: dinner ? dinner.combo : [],
-    };
-  }
-  
+  };
+}
+
+function recommend3Meals(categorizer, calorieRange) {
+  const dailyMealPlan = recommendDistinctMeals(categorizer, calorieRange);
+  localStorage.setItem("dailyMealPlan", JSON.stringify(dailyMealPlan));
+}
+
+function FoodsData() {
+  const foodsData = JSON.parse(localStorage.getItem("Foods"));
+  const categorizer = new Categorizer();
+
+  // 로컬 스토리지에서 가져온 데이터 기반으로 각 음식 정보를 Categorizer에 추가
+  foodsData.forEach(food => {
+      categorizer.addFood(new Food(food.name, food.calories, food.category));
+  });
+
+  return categorizer;
+}
