@@ -55,23 +55,15 @@
 </head>
 <script src="functions.js"></script>
 <body>
-  <!-- 사이드바 -->
-  <div class="sidebar">
-    <h2>Sidebar Menu</h2>
-    <ul>
-        <li><a href="bmi.html">BMI 검사</a></li>
-        <li><a href="menu.html">식단 추천</a></li>
-        <li><a href="add.html">음식 추가</a></li>
-        <li><a href="login.html">로그아웃</a></li>
-    </ul>
-  </div>
-
   <header>
     <h1>Fat GPT</h1>
   </header>
   <div class="container">
     <h1>식사 추천 프로그램</h1>
 
+    
+
+    <!-- 현재 체중 및 목표 체중 입력 -->
     <div>
       <label for="weight">현재 체중 (kg):</label>
       <input type="number" id="weight" min="0" placeholder="예: 65">
@@ -83,6 +75,7 @@
     </div>
 
     <!-- 버튼 -->
+    
     <button onclick="onButtonClick()">식사 추천</button> 
 
     <!-- 결과 출력 -->
@@ -124,6 +117,6 @@
     <a href="#">Fat GPT 정책</a> | 
     <a href="#">고객센터</a> | 
     <a href="#">ⓒ2024 Fat GPT</a>
-  </footer>
+</footer>
 </body>
 </html>
