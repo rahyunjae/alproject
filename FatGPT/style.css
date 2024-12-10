@@ -7,11 +7,10 @@ body, html {
 }
 
 header {
-    background-color: #333;
-    color: white;
     padding: 20px;
     text-align: center;
     font-size: 24px;
+    border-bottom: 3px solid #FF4500; /* 다홍색(OrangeRed)의 가로줄 */
 }
 
 main {
@@ -38,8 +37,6 @@ main {
 }
 
 footer {
-    background-color: #222;
-    color: white;
     text-align: center;
     padding: 20px;
     font-size: 14px;
@@ -48,7 +45,7 @@ footer {
 
 footer a {
     text-decoration: none; /* 기본 밑줄 제거 */
-    color: #ffffff; /* 텍스트 색상 (원하는 색으로 설정) */
+    color: #6c6c6c; /* 텍스트 색상 (원하는 색으로 설정) */
     font-size: 16px; /* 폰트 크기 */
     padding: 5px 10px; /* 패딩 추가 */
 }
