@@ -287,3 +287,8 @@ input {
 .sidebar a:hover {
     background-color: #8f8f8f;
 }
+
+/* 식단 추천 프로그램 */
+#meal-result {
+    text-align: center;
+  }

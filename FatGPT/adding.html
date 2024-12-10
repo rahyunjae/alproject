@@ -1,128 +1,45 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>식사 추천</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAT GPT</title>
 
-  <link rel="stylesheet" href="style.css">
-  <script src="functions.js"></script>
-  
-  <style>
-    label {
-      display: block;
-      font-size: 14px;
-      color: #555;
-      margin-top: 15px;
-      text-align: left;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-sizing: border-box;
-      font-size: 14px;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 12px 20px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 14px;
-      width: 100%;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    #meal-result {
-      margin-top: 20px;
-      text-align: left;
-      font-size: 14px;
-      color: #333;
-      background-color: #f1f1f1;
-      padding: 15px;
-      border-radius: 5px;
-    }
-  </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Fat GPT</h1>
-  </header>
-  <div class="container">
-    <h1>식사 추천 프로그램</h1>
-
-    <!-- 식사 종류 입력 필드 -->
-    <div>
-      <label for="food-name">식사 종류 이름:</label>
-      <input type="text" id="food-name" placeholder="예: 주먹밥">
+    <!-- 사이드바 -->
+    <div class="sidebar">
+        <h2>Sidebar Menu</h2>
+        <ul>
+            <li><a href="bmi.html">BMI 검사</a></li>
+            <li><a href="menu.html">식단 추천</a></li>
+            <li><a href="add.html">음식 추가</a></li>
+            <li><a href="login.html">로그아웃</a></li>
+        </ul>
     </div>
 
-    <div>
-      <label for="food-calories">칼로리 (kcal):</label>
-      <input type="number" id="food-calories" min="0" placeholder="예: 210">
-    </div>
+    <header>
+        <h1>Fat GPT</h1>
+    </header>
+    <main>
+        <div class="content">
+            <p>식단 추가하기</p>
+            <img src="무도.gif" width="1000"/>
 
-    <div>
-      <label for="food-category">카테고리:</label>
-      <select id="food-category">
-        <option value="주식">주식</option>
-        <option value="단일음식">단일음식</option>
-      </select>
-    </div>
-
-    <!-- 추가 버튼 -->
-    <button onclick="addFood()">추가</button>
-
-    <!-- 결과 출력 (음식 추가 후 다시 화면에 표시) -->
-    <div id="meal-result"></div>
-
-    <script>
-      window.onload = function() {
-        // 로컬 스토리지에서 식사 종류 로드
-        const foodsData = JSON.parse(localStorage.getItem("foodsData")) || [];
-        updateFoodList(foodsData);
-      };
-
-      function addFood() {
-        const name = document.getElementById('food-name').value;
-        const calories = parseInt(document.getElementById('food-calories').value);
-        const category = document.getElementById('food-category').value;
-
-        if (name && calories && category) {
-          const newFood = { name, calories, category };
-          const foodsData = JSON.parse(localStorage.getItem("foodsData")) || [];
-          foodsData.push(newFood);
-          localStorage.setItem("foodsData", JSON.stringify(foodsData));
-          updateFoodList(foodsData);
-
-          // 입력 필드 초기화
-          document.getElementById('food-name').value = '';
-          document.getElementById('food-calories').value = '';
-          document.getElementById('food-category').value = '주식';
-        } else {
-          alert('모든 필드를 입력하세요.');
-        }
-      }
-
-      function updateFoodList(foodsData) {
-        // 음식 목록을 바로 출력하지 않고 필요할 때 추가하도록 수정
-        document.getElementById("meal-result").innerHTML = '';
-      }
-    </script>
-  </div>
-
-  <footer>
-    <p>© 2024 FAT GPT</p>
-  </footer>
+            <a href="menu.html">식단 추천받기</a>
+        </div>
+        
+    </main>
+    <footer>
+        <a href="#">회사소개</a> | 
+        <a href="#">인재채용</a> | 
+        <a href="#">제휴제안</a> | 
+        <a href="#">이용약관</a> | 
+        <a href="#">개인정보처리방침</a> | 
+        <a href="#">Fat GPT 정책</a> | 
+        <a href="#">고객센터</a> | 
+        <a href="#">ⓒ2024 Fat GPT</a>
+    </footer>
 </body>
 </html>
